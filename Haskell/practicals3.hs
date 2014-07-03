@@ -42,8 +42,7 @@ double (x:xs) = x : x : double xs
 -- 7
 interleave :: [a] -> [a] -> [a]
 interleave [] ys = ys
-interleave xs [] = xs
-interleave (x:xs) (y:ys) = x : y : interleave xs ys
+interleave (x:xs) ys = x : interleave ys xs
 
 -- 8
 splitLR :: [Either a b] -> ([a], [b])
