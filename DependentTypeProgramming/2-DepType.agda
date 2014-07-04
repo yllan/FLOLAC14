@@ -65,5 +65,4 @@ exII-4b x = (λ y → fst (x y)) , (λ z → snd (x z))
 AC : ∀ {A B : Set} {R : A → B → Set} 
      → ((x : A) → Σ B (λ y → R x y))
      → Σ (A → B) (λ f → ((z : A) → R z (f z)))
-AC g = let f x = fst' (g x)
-       in (f , (λ z → snd' (g z)))
+AC r = (λ x → fst' (r x)) , (λ z → snd' (r z))

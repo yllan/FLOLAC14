@@ -96,7 +96,7 @@ _++_ : ∀ {A m n} → Vec A m → Vec A n → Vec A (m + n)
 
 doubleL : ∀ {A} → List A → List A
 doubleL [] = [] 
-doubleL (x ∷ xs) = x ∷ x ∷ xs
+doubleL (x ∷ xs) = x ∷ x ∷ doubleL xs
 
 interleaveL : ∀ {A} → List A → List A → List A
 interleaveL [] ys = ys
@@ -110,6 +110,7 @@ double [] = []
 double (x ∷ xs) = x ∷ {!!}
 
 -}
+
 
 {- We need to somehow convince Agda that suc (m + n)
    and m + (suc n) are the same. Before we can do that,
@@ -127,12 +128,15 @@ data Even : ℕ → Set where
   -- Let's try proving that 6 is even,
 
 6-even : Even 6
-6-even = {!!}
+6-even = 2+even (2+even (2+even 0even))
 
   -- and that if n is even, so is 4 + n.
 
 4+even : ∀ n → Even n → Even (4 + n)
-4+even = {!!}
+4+even n p = 2+even (2+even p)
+
+-2even : ∀ n → Even (2 + n) → Even n
+-2even n (2+even p) = p
 
  {- * The following are some more exercises using ⊥.
       Not mandatory, but try if you want to understand
@@ -147,7 +151,7 @@ data ⊥ : Set where
   -- Of course, if 2+n is not even, nor is n.
 
 ¬e2+n→¬en : ∀ n → ¬ (Even (suc (suc n))) → ¬ (Even n)
-¬e2+n→¬en n = {!!}
+¬e2+n→¬en n p = λ x → p (2+even x)
 
   -- One may also define another datatype serving
   -- as a proof that a number is odd.
@@ -169,11 +173,16 @@ data Odd : ℕ → Set where
   -- Remove the definition below and try this yourself!
 
 ¬even→odd : ∀ n → ¬ (Even n) → Odd n
+¬even→odd 0 p = ⊥-elim (p 0even)
+¬even→odd 1 p = 1odd
+¬even→odd (suc (suc n)) p = 2+odd (¬even→odd n (λ x → p (2+even x)))
+
+{-
 ¬even→odd zero p = ⊥-elim (p 0even)
 ¬even→odd (suc zero) p = 1odd
 ¬even→odd (suc (suc n)) p = 2+odd (¬even→odd n (¬e2+n→¬en n p)) 
-
-  -- We can also prove Odd n → ¬(Even n), etc.
+-}
+-- We can also prove Odd n → ¬(Even n), etc.
 
 -- Propositional Equality
 --    m ≡ n is a proof that m equals n!
@@ -221,5 +230,5 @@ double {A} {suc n} (x ∷ xs) with +-suc n n
 -- But, use +-comm to define interleave.
 
 interleave : ∀ {A m n} → Vec A m → Vec A n → Vec A (m + n)
-interleave [] ys = {!!}
-interleave {A} {suc m} {n} (x ∷ xs) ys = {!!}
+interleave [] ys = ys
+interleave {A} {suc m} {n} (x ∷ xs) ys rewrite +-comm m n = x ∷ interleave ys xs
